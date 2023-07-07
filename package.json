@@ -1,0 +1,57 @@
+{
+  "name": "dbshow",
+  "version": "0.0.0",
+  "description": "A CLI tool to show database schema, support MySQL, PostgreSQL, SQLite, and MongoDB.",
+  "author": "xbmlz <chenxc170016@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/xbmlz/dbshow#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xbmlz/dbshow.git"
+  },
+  "bugs": {
+    "url": "https://github.com/xbmlz/dbshow/issues"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "dbshow": "bin/index.mjs"
+  },
+  "files": [
+    "dist",
+    "bin"
+  ],
+  "scripts": {
+    "dev": "esno src/index.ts",
+    "build": "unbuild",
+    "stub": "unbuild --stub",
+    "release": "bumpp && npm publish",
+    "lint": "eslint ."
+  },
+  "keywords": [],
+  "devDependencies": {
+    "@antfu/eslint-config": "^0.39.7",
+    "@types/gradient-string": "^1.1.2",
+    "@types/node": "^20.4.0",
+    "bumpp": "^9.1.1",
+    "eslint": "^8.44.0",
+    "esno": "^0.16.3",
+    "typescript": "^5.1.6",
+    "unbuild": "^1.2.1"
+  },
+  "eslintConfig": {
+    "extends": "@antfu"
+  },
+  "dependencies": {
+    "@inquirer/prompts": "^2.3.0",
+    "gradient-string": "^2.0.2"
+  }
+}
