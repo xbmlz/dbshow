@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es2017",
+    "rootDir": ".",
+    "target": "es2018",
     "module": "esnext",
     "lib": [
       "esnext"
@@ -9,6 +10,13 @@
     "esModuleInterop": true,
     "strict": true,
     "strictNullChecks": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "paths": {
+      "dbshow": [
+        "./src/index.ts"
+      ]
+    }
   }
 }

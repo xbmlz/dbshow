@@ -1,5 +1,6 @@
 {
   "name": "dbshow",
+  "type": "module",
   "version": "0.0.0",
   "description": "A CLI tool to show database schema, support MySQL, PostgreSQL, SQLite, and MongoDB.",
   "author": "xbmlz <chenxc170016@gmail.com>",
@@ -12,31 +13,37 @@
   "bugs": {
     "url": "https://github.com/xbmlz/dbshow/issues"
   },
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "require": "./dist/index.cjs",
-      "import": "./dist/index.mjs"
-    }
-  },
-  "main": "dist/index.cjs",
+  "keywords": [
+    "cli",
+    "database",
+    "schema",
+    "mysql",
+    "postgresql",
+    "sqlite",
+    "docs",
+    "markdown",
+    "word"
+  ],
+  "main": "dist/index.mjs",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "bin": {
-    "dbshow": "bin/index.mjs"
+    "dbshow": "bin/dbshow.mjs"
   },
   "files": [
-    "dist",
-    "bin"
+    "dist"
   ],
   "scripts": {
-    "dev": "esno src/index.ts",
+    "dev": "esno src/cli.ts",
     "build": "unbuild",
-    "stub": "unbuild --stub",
     "release": "bumpp && npm publish",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
-  "keywords": [],
+  "dependencies": {
+    "@inquirer/prompts": "^2.3.0",
+    "gradient-string": "^2.0.2"
+  },
   "devDependencies": {
     "@antfu/eslint-config": "^0.39.7",
     "@types/gradient-string": "^1.1.2",
@@ -49,9 +56,5 @@
   },
   "eslintConfig": {
     "extends": "@antfu"
-  },
-  "dependencies": {
-    "@inquirer/prompts": "^2.3.0",
-    "gradient-string": "^2.0.2"
   }
 }
