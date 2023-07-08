@@ -36,6 +36,7 @@
   "scripts": {
     "dev": "esno src/cli.ts",
     "build": "unbuild",
+    "prepublishOnly": "nr build",
     "release": "bumpp && npm publish",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"

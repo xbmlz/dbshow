@@ -5,12 +5,12 @@ import fs from 'node:fs'
 import http from 'node:http'
 import { getDBInfo } from './db'
 import type { DBInfo, DBOption, TableInfo } from './types'
-import { convertLineBreaks, createDir, writeFile } from './utils'
+import { convertLineBreaks, createDir, renderGradientString, writeFile } from './utils'
 import { docsifyIndexRaw } from './data'
 
 export async function createDoc(opt: DBOption): Promise<string> {
   const db = await getDBInfo(opt)
-  const docPath = path.join(os.homedir(), '.dbshow', db.name)
+  const docPath = path.join(os.homedir(), '.dbshow', opt.dbType, opt.host, opt.database)
   await createDir(docPath)
   // docsify index.html
   await writeFile(path.join(docPath, 'index.html'), docsifyIndexRaw)
@@ -21,7 +21,7 @@ export async function createDoc(opt: DBOption): Promise<string> {
   // docsify tables
   for (const table of db.tables)
     writeFile(path.join(docPath, `${table.tableName}.md`), buildTableInfo(table))
-  console.log(`Database doc created at ${docPath}`)
+  // console.log(`Database doc created at ${docPath}`)
   return docPath
 }
 
@@ -97,6 +97,7 @@ export async function runDocServer(docPath: string, port: number) {
   })
   const host = '0.0.0.0'
   server.listen(port, host, () => {
-    console.log(`Datebase doc server running at http://127.0.0.1:${port}, press Ctrl+C to stop.`)
+    const url = renderGradientString(`http://${host}:${port}`)
+    console.log(`Datebase doc server running at ${url}, press Ctrl+C to stop.`)
   })
 }

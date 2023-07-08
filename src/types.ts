@@ -16,6 +16,10 @@ export interface DBOption {
   database: string
 }
 
+export interface LocalConfig extends DBOption {
+  key: string
+}
+
 export type DBType = Dialect
 
 export interface ColumnInfo {

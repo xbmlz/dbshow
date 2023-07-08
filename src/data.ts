@@ -1,12 +1,4 @@
-import gradient from 'gradient-string'
-import pkg from '../package.json'
 import type { DB } from './types'
-
-export const bannerText = gradient([
-  { color: '#42d392', pos: 0 },
-  { color: '#42d392', pos: 0.1 },
-  { color: '#647eff', pos: 1 },
-])(`Welcome to the DB Show! v${pkg.version}`)
 
 export const dbList: DB[] = [
   {
