@@ -1,9 +1,8 @@
 import { confirm, input, select } from '@inquirer/prompts'
 import pkg from '../package.json'
-import type { DBOption } from '../dist'
 import { dbList } from './data'
 import { createDoc, runDocServer } from './doc'
-import type { DBType } from './types'
+import type { DBOption, DBType } from './types'
 import { renderGradientString } from './utils'
 import { readLocalConfig, writeLocalConfig } from './config'
 
