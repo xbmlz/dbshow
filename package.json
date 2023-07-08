@@ -1,7 +1,7 @@
 {
   "name": "dbshow",
   "type": "module",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A CLI tool to show database schema, support MySQL, PostgreSQL, SQLite, and MongoDB.",
   "author": "xbmlz <chenxc170016@gmail.com>",
   "license": "MIT",
@@ -44,13 +44,18 @@
   "dependencies": {
     "@inquirer/prompts": "^2.3.0",
     "gradient-string": "^2.0.2",
+    "json-schema-to-typescript": "^13.0.2",
     "mysql2": "^3.5.0",
-    "sequelize": "^6.32.1"
+    "ora": "^6.3.1",
+    "sequelize": "^6.32.1",
+    "sql-ddl-to-json-schema": "^4.1.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.39.7",
     "@types/gradient-string": "^1.1.2",
+    "@types/json-schema": "^7.0.12",
     "@types/node": "^20.4.0",
+    "@types/ora": "^3.2.0",
     "bumpp": "^9.1.1",
     "eslint": "^8.44.0",
     "esno": "^0.16.3",

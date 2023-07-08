@@ -8,9 +8,10 @@ A CLI tool to show database schema, support Postgres, MySQL, MariaDB, SQLite, Mi
 
 ## Features
 
-- Show database schema, including tables, views, ddl, indexes and triggers.
+- Show database schema, including tables, views, indexes and triggers.
 - Support Postgres, MySQL, MariaDB, SQLite, Microsoft SQL Server, Oracle Database etc.
 - Support view information on Browser.(Based on [Docsify](https://docsify.js.org/#/))
+- Support show table ddl, json schema, ts interface etc.
 - Support export to PDF, PNG, JPEG, SVG, and HTML.
 - Support show update history.
 - Support save and load database connection information.

@@ -23,12 +23,31 @@ export const docsifyIndexRaw = `
 <script>
   window.$docsify = {
     loadSidebar: true,
-    search: 'auto',
+    auto2top: true,
+    search: {
+      placeholder: '搜索',
+      noData: '找不到结果',
+    },
+    name: 'DBShow',
+    plugins: [
+      function(hook, vm) {
+        hook.beforeEach(function(content) {
+          return (
+            content +
+            '\\n---\\n' +
+            'Built with [DBShow](https://github.com/xbmlz/dbshow) and powered by [Docsify](https://docsify.js.org/#/)'
+          )
+        })
+      }
+    ]
   }
 </script>
 <script src="https://cdn.bootcdn.net/ajax/libs/docsify/4.13.0/docsify.min.js"></script>
 <script src="https://cdn.bootcdn.net/ajax/libs/docsify/4.13.0/plugins/search.min.js"></script>
-<script src="https://cdn.bootcdn.net/ajax/libs/prism/9000.0.1/components/prism-sql.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/docsify-copy-code/2.1.1/docsify-copy-code.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/prism/1.9.0/components/prism-sql.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/prism/1.9.0/components/prism-json.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/prism/1.9.0/components/prism-typescript.min.js"></script>
 </body>
 </html>
 `

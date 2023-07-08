@@ -36,6 +36,8 @@ export interface TableInfo {
   tableName: string
   tableComment: string
   tableDDL: string
+  jsonSchema: string
+  tsInterface: string
   createTime: string
   updateTime: string
   columns: ColumnInfo[]

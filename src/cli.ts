@@ -1,4 +1,5 @@
 import { confirm, input, select } from '@inquirer/prompts'
+import ora from 'ora'
 import pkg from '../package.json'
 import { dbList } from './data'
 import { createDoc, runDocServer } from './doc'
@@ -96,7 +97,9 @@ async function main() {
   }
 
   // create doc
+  const spinner = ora('Creating doc...').start()
   const docPath = await createDoc(opt)
+  spinner.stop()
   // confirm save config
   if (!useLocal) {
     const saveConfig = await confirm({
@@ -123,8 +126,19 @@ async function main() {
     }
   }
 
+  const serverPort = await input({
+    message: 'Enter server port number',
+    validate: (input) => {
+      const port = Number(input)
+      if (!port || Number.isNaN(port) || port < 0 || port > 65535)
+        return 'Please enter a valid port number!'
+      return true
+    },
+    default: '3000',
+  })
+
   // run http server
-  await runDocServer(docPath, 3000)
+  await runDocServer(docPath, Number(serverPort))
 }
 
 main()

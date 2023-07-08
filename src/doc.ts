@@ -5,7 +5,7 @@ import fs from 'node:fs'
 import http from 'node:http'
 import { getDBInfo } from './db'
 import type { DBInfo, DBOption, TableInfo } from './types'
-import { convertLineBreaks, createDir, renderGradientString, writeFile } from './utils'
+import { convertLineBreaks, createDir, getLocalIPv4Addresses, renderGradientString, writeFile } from './utils'
 import { docsifyIndexRaw } from './data'
 
 export async function createDoc(opt: DBOption): Promise<string> {
@@ -29,7 +29,7 @@ function buildReadme(db: DBInfo): string {
   let readme = `
   # ${db.name}\n\n
 
-  ## Overview\n\n
+  ## Database\n\n
 
   | Name | Version | Charset | Collation |
   | --- | --- | --- | --- |
@@ -40,8 +40,10 @@ function buildReadme(db: DBInfo): string {
   | Name | Comment | Create Time | Update Time |
   | --- | --- | --- | --- |
   `
-  for (const table of db.tables)
-    readme += `| ${table.tableName} | ${convertLineBreaks(table.tableComment)} | ${table.createTime} | ${table.updateTime} |\n`
+  for (const table of db.tables) {
+    const tableLink = `<a href="/#/${table.tableName}">${table.tableName}</a>`
+    readme += `| ${tableLink} | ${convertLineBreaks(table.tableComment)} | ${table.createTime} | ${table.updateTime} |\n`
+  }
   return readme
 }
 
@@ -77,6 +79,18 @@ function buildTableInfo(table: TableInfo): string {
   tableInfo += '```sql\n'
   tableInfo += `${table.tableDDL}\n`
   tableInfo += '```\n'
+  if (table.jsonSchema) {
+    tableInfo += '\n## JSON Schema\n\n'
+    tableInfo += '```json\n'
+    tableInfo += `${table.jsonSchema}\n`
+    tableInfo += '```\n'
+  }
+  if (table.tsInterface) {
+    tableInfo += '\n## TypeScript Interface\n\n'
+    tableInfo += '```typescript\n'
+    tableInfo += `${table.tsInterface}\n`
+    tableInfo += '```\n'
+  }
   return tableInfo
 }
 
@@ -96,8 +110,10 @@ export async function runDocServer(docPath: string, port: number) {
     })
   })
   const host = '0.0.0.0'
+  let networkUrl = `    \n\nDatebase doc server is ready.\n\n ➜  Local: http://localhost:${port}\n`
+  for (const url of getLocalIPv4Addresses())
+    networkUrl += ` ➜  Network: http://${url}:${port}\n`
   server.listen(port, host, () => {
-    const url = renderGradientString(`http://${host}:${port}`)
-    console.log(`Datebase doc server running at ${url}, press Ctrl+C to stop.`)
+    console.log(renderGradientString(networkUrl))
   })
 }
