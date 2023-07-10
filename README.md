@@ -22,8 +22,13 @@ A CLI tool to show database schema, support Postgres, MySQL, MariaDB, SQLite, Mi
 
 ```bash
 npx dbshow
-# or
+
+# use latest version(recommend)
+npx dbshow@latest
+
+# use npm
 npm install -g dbshow
+
 dbshow
 ```
 
