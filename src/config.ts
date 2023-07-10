@@ -2,11 +2,13 @@ import path from 'node:path'
 import os from 'node:os'
 import fs from 'node:fs'
 import type { LocalConfig } from './types'
+import { createDir } from './utils'
 
 const configPath = path.join(os.homedir(), '.dbshow', 'config.json')
 
 export async function readLocalConfig(): Promise<LocalConfig[]> {
   if (!fs.existsSync(configPath)) {
+    createDir(path.dirname(configPath))
     await fs.promises.writeFile(configPath, '[]')
     return []
   }

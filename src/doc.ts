@@ -37,12 +37,12 @@ function buildReadme(db: DBInfo): string {
 
   ## Tables\n\n
 
-  | Name | Comment | Create Time | Update Time |
-  | --- | --- | --- | --- |
+  | No | Name | Comment | Create Time | Update Time |
+  | --- | --- | --- | --- | --- |
   `
-  for (const table of db.tables) {
+  for (const [index, table] of db.tables.entries()) {
     const tableLink = `<a href="/#/${table.tableName}">${table.tableName}</a>`
-    readme += `| ${tableLink} | ${convertLineBreaks(table.tableComment)} | ${table.createTime} | ${table.updateTime} |\n`
+    readme += `| ${index + 1} | ${tableLink} | ${convertLineBreaks(table.tableComment)} | ${table.createTime} | ${table.updateTime} |\n`
   }
   return readme
 }
@@ -79,12 +79,12 @@ function buildTableInfo(table: TableInfo): string {
   tableInfo += '```sql\n'
   tableInfo += `${table.tableDDL}\n`
   tableInfo += '```\n'
-  if (table.jsonSchema) {
-    tableInfo += '\n## JSON Schema\n\n'
-    tableInfo += '```json\n'
-    tableInfo += `${table.jsonSchema}\n`
-    tableInfo += '```\n'
-  }
+  // if (table.jsonSchema) {
+  //   tableInfo += '\n## JSON Schema\n\n'
+  //   tableInfo += '```json\n'
+  //   tableInfo += `${table.jsonSchema}\n`
+  //   tableInfo += '```\n'
+  // }
   if (table.tsInterface) {
     tableInfo += '\n## TypeScript Interface\n\n'
     tableInfo += '```typescript\n'
