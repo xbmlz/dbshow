@@ -6,14 +6,14 @@ import http from 'node:http'
 import { getDBInfo } from './db'
 import type { DBInfo, DBOption, TableInfo } from './types'
 import { convertLineBreaks, createDir, getLocalIPv4Addresses, renderGradientString, writeFile } from './utils'
-import { docsifyIndexRaw } from './data'
+import { SITE_FAVICON } from './data'
 
 export async function createDoc(opt: DBOption): Promise<string> {
   const db = await getDBInfo(opt)
   const docPath = path.join(os.homedir(), '.dbshow', opt.dbType, opt.host, opt.database)
   await createDir(docPath)
   // docsify index.html
-  await writeFile(path.join(docPath, 'index.html'), docsifyIndexRaw)
+  await writeFile(path.join(docPath, 'index.html'), buildDocsifyIndexRaw(opt))
   // docsify README.md
   await writeFile(path.join(docPath, 'README.md'), buildReadme(db))
   // docsify _sidebar.md
@@ -33,7 +33,7 @@ function buildReadme(db: DBInfo): string {
 
   | Name | Version | Charset | Collation |
   | --- | --- | --- | --- |
-  | ${db.name} | ${db.version} | ${db.charset} | ${db.collation} |\n\n
+  | ${db.name} | ${convertLineBreaks(db.version)} | ${db.charset} | ${db.collation} |\n\n
 
   ## Tables\n\n
 
@@ -94,6 +94,53 @@ function buildTableInfo(table: TableInfo): string {
     tableInfo += '```\n'
   }
   return tableInfo
+}
+
+export function buildDocsifyIndexRaw(opt: DBOption) {
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="UTF-8">
+  <link href="https://cdn.bootcdn.net/ajax/libs/docsify/4.13.0/themes/vue.min.css" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,${btoa(SITE_FAVICON)}">
+  <title>${opt.database} - DBShow</title>
+</head>
+<body>
+<div id="app">加载中</div>
+<script>
+  window.$docsify = {
+    loadSidebar: true,
+    auto2top: true,
+    search: {
+      placeholder: '搜索',
+      noData: '找不到结果',
+    },
+    name: '${opt.database} - DBShow',
+    plugins: [
+      function(hook, vm) {
+        hook.beforeEach(function(content) {
+          return (
+            content +
+            '\\n---\\n' +
+            'Built with [DBShow](https://github.com/xbmlz/dbshow) and powered by [Docsify](https://docsify.js.org/#/)'
+          )
+        })
+      }
+    ]
+  }
+</script>
+<script src="https://cdn.bootcdn.net/ajax/libs/docsify/4.13.0/docsify.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/docsify/4.13.0/plugins/search.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/docsify-copy-code/2.1.1/docsify-copy-code.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/prism/1.9.0/components/prism-sql.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/prism/1.9.0/components/prism-json.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/prism/1.9.0/components/prism-typescript.min.js"></script>
+</body>
+</html>
+`
 }
 
 export async function runDocServer(docPath: string, port: number) {

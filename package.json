@@ -1,8 +1,8 @@
 {
   "name": "dbshow",
   "type": "module",
-  "version": "0.0.6",
-  "description": "A CLI tool to show database schema, support MySQL, PostgreSQL, SQLite, and MongoDB.",
+  "version": "0.0.7",
+  "description": "A CLI tool to show database schema, support Postgres, MySQL, MariaDB, SQLite, Microsoft SQL Server, Oracle Database etc.",
   "author": "xbmlz <chenxc170016@gmail.com>",
   "license": "MIT",
   "homepage": "https://github.com/xbmlz/dbshow#readme",
@@ -50,7 +50,8 @@
     "pg": "^8.11.1",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.32.1",
-    "sql-ddl-to-json-schema": "^4.1.0"
+    "sql-ddl-to-json-schema": "^4.1.0",
+    "tedious": "^16.2.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.39.7",

@@ -127,19 +127,19 @@ async function main() {
     }
   }
 
-  // const serverPort = await input({
-  //   message: 'Enter server port number',
-  //   validate: (input) => {
-  //     const port = Number(input)
-  //     if (!port || Number.isNaN(port) || port < 0 || port > 65535)
-  //       return 'Please enter a valid port number!'
-  //     return true
-  //   },
-  //   default: '3000',
-  // })
+  const serverPort = await input({
+    message: 'Enter server port number',
+    validate: (input) => {
+      const port = Number(input)
+      if (!port || Number.isNaN(port) || port < 0 || port > 65535)
+        return 'Please enter a valid port number!'
+      return true
+    },
+    default: '3000',
+  })
 
   // run http server
-  await runDocServer(docPath, 6666)
+  await runDocServer(docPath, Number(serverPort))
 }
 
 main()

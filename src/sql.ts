@@ -18,6 +18,13 @@ export function getDBSql(opt: DBOption): string {
           current_setting('server_encoding') AS charset,
           current_setting('lc_collate')      AS collation;
       `
+    case 'mssql':
+      return `
+      SELECT '${opt.database}'                                                                              AS name,
+            @@VERSION                                                                                       AS version,
+            COLLATIONPROPERTY(CONVERT(varchar, DATABASEPROPERTYEX('${opt.database}', 'Collation')), 'Name') AS collation,
+            CONVERT(varchar(100), SERVERPROPERTY('Collation'))                                              AS charset
+      `
     default:
       console.error('Unsupported database type!')
       process.exit(1)
@@ -48,6 +55,18 @@ export function getTableSql(opt: DBOption): string {
       WHERE n.nspname = 'public'
           AND c.relkind = 'r'
       ORDER BY relname;
+      `
+    case 'mssql':
+      return `
+      SELECT o.name        AS tableName,
+            ep.value       AS tableComment,
+            CONVERT(VARCHAR(19), o.create_date, 120) AS createTime,
+            CONVERT(VARCHAR(19), o.modify_date, 120) AS updateTime
+      FROM sys.objects o
+            LEFT JOIN sys.extended_properties ep ON ep.major_id = o.object_id AND ep.minor_id = 0 AND ep.name = 'MS_Description'
+      WHERE o.type = 'U'
+        AND o.is_ms_shipped = 0
+      ORDER BY o.name ASC
       `
     default:
       console.error('Unsupported database type!')
@@ -96,6 +115,38 @@ export function getColumnSql(opt: DBOption, tableName: string): string {
       WHERE cols.table_name = '${tableName}'
       ORDER BY cols.ordinal_position;
       `
+    case 'mssql':
+      return `
+      SELECT a.colid                          AS ordinalPosition,
+            a.name                            AS columnName,
+            CASE WHEN b.name IN ('varchar', 'nvarchar', 'char', 'nchar', 'varbinary')
+                      THEN b.name + '(' + CAST(a.length AS VARCHAR) + ')'
+                  WHEN b.name IN ('numeric', 'decimal')
+                      THEN b.name + '(' + CAST(a.prec AS VARCHAR) + ',' + CAST(a.scale AS VARCHAR) + ')'
+                  ELSE b.name
+                END                           AS columnType,
+            CASE WHEN EXISTS(SELECT 1 FROM sysobjects
+                              WHERE xtype = 'PK'
+                                AND name IN (SELECT name FROM sysindexes
+                                            WHERE indid IN (
+                                                SELECT indid FROM sysindexkeys
+                                                WHERE id = a.id
+                                                  AND colid = a.colid
+                                            )
+                              )
+            ) THEN 'PRI' ELSE '' END          AS columnKey,
+            e.text                            AS columnDefault,
+            g.value                           AS columnComment,
+            CASE WHEN a.isnullable = 1 THEN 'YES' ELSE 'NO' END AS isNullable
+      FROM syscolumns a
+              LEFT JOIN systypes b ON a.xusertype = b.xusertype
+              INNER JOIN sysobjects d ON a.id = d.id AND d.xtype = 'U' AND d.name <> 'dtproperties'
+              LEFT JOIN syscomments e ON a.cdefault = e.id
+              LEFT JOIN sys.extended_properties g ON a.id = g.major_id AND a.colid = g.minor_id
+              LEFT JOIN sys.extended_properties f ON d.id = f.major_id AND f.minor_id = 0
+      WHERE d.name = '${tableName}'
+      ORDER BY a.id, a.colorder;
+      `
     default:
       console.error('Unsupported database type!')
       process.exit(1)
@@ -107,6 +158,9 @@ export function getTableDDLSql(opt: DBOption, tableName: string): string {
     case 'mysql':
       return `SHOW CREATE TABLE ${opt.database}.${tableName}`
     case 'postgres':
+      // TODO not yet implemented
+      return `SELECT '' AS "Create Table" FROM ${tableName}`
+    case 'mssql':
       // TODO not yet implemented
       return `SELECT '' AS "Create Table" FROM ${tableName}`
     default:

@@ -13,47 +13,12 @@ export const dbList: DB[] = [
     defaultPort: '5432',
     defaultUser: 'postgres',
   },
+  {
+    name: 'Microsoft SQL Server',
+    value: 'mssql',
+    defaultPort: '1433',
+    defaultUser: 'sa',
+  },
 ]
 
-export const docsifyIndexRaw = `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta charset="UTF-8">
-  <link href="https://cdn.bootcdn.net/ajax/libs/docsify/4.13.0/themes/vue.min.css" rel="stylesheet">
-</head>
-<body>
-<div id="app">加载中</div>
-<script>
-  window.$docsify = {
-    loadSidebar: true,
-    auto2top: true,
-    search: {
-      placeholder: '搜索',
-      noData: '找不到结果',
-    },
-    name: 'DBShow',
-    plugins: [
-      function(hook, vm) {
-        hook.beforeEach(function(content) {
-          return (
-            content +
-            '\\n---\\n' +
-            'Built with [DBShow](https://github.com/xbmlz/dbshow) and powered by [Docsify](https://docsify.js.org/#/)'
-          )
-        })
-      }
-    ]
-  }
-</script>
-<script src="https://cdn.bootcdn.net/ajax/libs/docsify/4.13.0/docsify.min.js"></script>
-<script src="https://cdn.bootcdn.net/ajax/libs/docsify/4.13.0/plugins/search.min.js"></script>
-<script src="https://cdn.bootcdn.net/ajax/libs/docsify-copy-code/2.1.1/docsify-copy-code.min.js"></script>
-<script src="https://cdn.bootcdn.net/ajax/libs/prism/1.9.0/components/prism-sql.min.js"></script>
-<script src="https://cdn.bootcdn.net/ajax/libs/prism/1.9.0/components/prism-json.min.js"></script>
-<script src="https://cdn.bootcdn.net/ajax/libs/prism/1.9.0/components/prism-typescript.min.js"></script>
-</body>
-</html>
-`
+export const SITE_FAVICON = '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="#42b983" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M4 6c0 1.657 3.582 3 8 3s8-1.343 8-3s-3.582-3-8-3s-8 1.343-8 3"/><path d="M4 6v6c0 1.453 2.755 2.665 6.414 2.941M20 11V6"/><path d="M4 12v6c0 1.579 3.253 2.873 7.383 2.991M18 22l3.35-3.284a2.143 2.143 0 0 0 .005-3.071a2.242 2.242 0 0 0-3.129-.006l-.224.22l-.223-.22a2.242 2.242 0 0 0-3.128-.006a2.143 2.143 0 0 0-.006 3.071L18 22z"/></g></svg>'
