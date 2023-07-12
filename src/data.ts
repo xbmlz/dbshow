@@ -2,10 +2,16 @@ import type { DB } from './types'
 
 export const dbList: DB[] = [
   {
-    name: 'MySQL(MariaDB)',
+    name: 'MySQL',
     value: 'mysql',
     defaultPort: '3306',
     defaultUser: 'root',
+  },
+  {
+    name: 'PostgreSQL',
+    value: 'postgres',
+    defaultPort: '5432',
+    defaultUser: 'postgres',
   },
 ]
 

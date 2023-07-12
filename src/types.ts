@@ -18,6 +18,7 @@ export interface DBOption {
 
 export interface LocalConfig extends DBOption {
   key: string
+  createdTime: number
 }
 
 export type DBType = Dialect

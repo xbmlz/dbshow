@@ -13,6 +13,8 @@ export async function writeFile(path: string, data: string) {
 }
 
 export function convertLineBreaks(text: string): string {
+  if (!text)
+    return text
   // \n -> <br>, \r\n -> <br>
   return text.replace(/\n/g, '<br>').replace(/\r\n/g, '<br>').replace(/\r/g, '<br>')
 }

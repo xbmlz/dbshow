@@ -23,20 +23,20 @@ export async function getDBInfo(opt: DBOption): Promise<DBInfo> {
     console.error('Unable to connect to the database!')
     process.exit(1)
   }
-  const db = await sequelize.query(getDBSql(opt.dbType), {
-    replacements: [opt.database],
+  // find db info
+  const db = await sequelize.query(getDBSql(opt), {
     plain: true,
   }) as unknown as DBInfo
 
-  const [tables] = await sequelize.query(getTableSql(opt.dbType), {
-    replacements: [opt.database],
-  }) as TableInfo[]
+  // find table info
+  const [tables] = await sequelize.query(getTableSql(opt)) as TableInfo[]
 
   if (!Array.isArray(tables)) {
     console.error('Unable to get table info!')
     process.exit(1)
   }
   for (const table of tables) {
+    // find table ddl
     const ddl = await sequelize.query(getTableDDLSql(opt, table.tableName), {
       plain: true,
     })
@@ -46,9 +46,8 @@ export async function getDBInfo(opt: DBOption): Promise<DBInfo> {
       table.jsonSchema = JSON.stringify(js[0], null, 2)
       table.tsInterface = await getTableTsInterface(js[0], table.tableName)
     }
-    const [columns] = await sequelize.query(getColumnSql(opt.dbType), {
-      replacements: [opt.database, table.tableName],
-    }) as ColumnInfo[]
+    // find column info
+    const [columns] = await sequelize.query(getColumnSql(opt, table.tableName)) as ColumnInfo[]
     if (!Array.isArray(columns)) {
       console.error('Unable to get column info!')
       process.exit(1)

@@ -12,7 +12,9 @@ export async function readLocalConfig(): Promise<LocalConfig[]> {
     await fs.promises.writeFile(configPath, '[]')
     return []
   }
-  return JSON.parse(fs.readFileSync(configPath, 'utf-8'))
+  const data = await fs.promises.readFile(configPath, 'utf-8')
+  // order by createTime(timestamp) desc
+  return JSON.parse(data).sort((a: LocalConfig, b: LocalConfig) => b.createdTime - a.createdTime)
 }
 
 export async function writeLocalConfig(config: LocalConfig[]) {

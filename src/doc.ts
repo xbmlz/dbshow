@@ -75,10 +75,12 @@ function buildTableInfo(table: TableInfo): string {
   tableInfo += '| --- | --- | --- | --- | --- | --- |\n'
   for (const column of table.columns)
     tableInfo += `| ${column.columnName} | ${column.columnType} | ${column.columnKey} | ${column.columnDefault} | ${column.isNullable} | ${convertLineBreaks(column.columnComment)} |\n`
-  tableInfo += '\n## DDL\n\n'
-  tableInfo += '```sql\n'
-  tableInfo += `${table.tableDDL}\n`
-  tableInfo += '```\n'
+  if (table.tableDDL) {
+    tableInfo += '\n## DDL\n\n'
+    tableInfo += '```sql\n'
+    tableInfo += `${table.tableDDL}\n`
+    tableInfo += '```\n'
+  }
   // if (table.jsonSchema) {
   //   tableInfo += '\n## JSON Schema\n\n'
   //   tableInfo += '```json\n'
