@@ -25,6 +25,14 @@ export function getDBSql(opt: DBOption): string {
             COLLATIONPROPERTY(CONVERT(varchar, DATABASEPROPERTYEX('${opt.database}', 'Collation')), 'Name') AS collation,
             CONVERT(varchar(100), SERVERPROPERTY('Collation'))                                              AS charset
       `
+    case 'oracle':
+      return `
+      SELECT 'ruoyi'                                                                         AS "name",
+            (SELECT BANNER FROM v$version WHERE ROWNUM = 1)                                  AS "version",
+            (SELECT VALUE FROM nls_database_parameters WHERE parameter = 'NLS_CHARACTERSET') AS "charset",
+            (SELECT VALUE FROM nls_database_parameters WHERE parameter = 'NLS_SORT')         AS "collation"
+      FROM dual;
+      `
     default:
       console.error('Unsupported database type!')
       process.exit(1)
@@ -67,6 +75,17 @@ export function getTableSql(opt: DBOption): string {
       WHERE o.type = 'U'
         AND o.is_ms_shipped = 0
       ORDER BY o.name ASC
+      `
+    case 'oracle':
+      return `
+      SELECT utc.TABLE_NAME  AS "tableName",
+            utc.comments     AS "tableComment",
+            uo.CREATED       AS "createTime",
+            uo.LAST_DDL_TIME AS "updateTime"
+      FROM user_tab_comments utc
+      LEFT JOIN user_objects uo ON utc.TABLE_NAME = uo.OBJECT_NAME AND utc.TABLE_TYPE = UO.OBJECT_TYPE
+      WHERE utc.TABLE_TYPE = 'TABLE'
+      ORDER BY utc.table_name ASC;
       `
     default:
       console.error('Unsupported database type!')
@@ -147,6 +166,25 @@ export function getColumnSql(opt: DBOption, tableName: string): string {
       WHERE d.name = '${tableName}'
       ORDER BY a.id, a.colorder;
       `
+    case 'oracle':
+      return `
+      SELECT atc.COLUMN_ID  AS "ordinalPosition",
+            atc.COLUMN_NAME AS "columnName",
+            atc.DATA_TYPE || CASE WHEN atc.data_precision IS NOT NULL THEN '(' || atc.data_precision || CASE WHEN atc.data_scale IS NOT NULL THEN ',' || atc.data_scale END || ')'
+            ELSE NULL END AS "columnType",
+            (SELECT CASE WHEN COUNT(*) > 0 THEN 'PRI' ELSE NULL END FROM all_constraints c, all_cons_columns cc
+            WHERE c.owner = atc.owner
+              AND c.table_name = atc.table_name
+              AND c.constraint_name = cc.constraint_name
+              AND cc.column_name = atc.column_name
+              AND c.constraint_type = 'P') AS "columnKey",
+            atc.DATA_DEFAULT AS "columnDefault",
+            DECODE(atc.NULLABLE, 'Y', 'YES', 'N', 'NO') AS "isNullable"
+      FROM all_tab_columns atc
+      WHERE atc.OWNER = '${opt.user.toUpperCase()}'
+      and atc.TABLE_NAME = '${tableName.toUpperCase()}'
+      ORDER BY atc.COLUMN_ID;
+      `
     default:
       console.error('Unsupported database type!')
       process.exit(1)
@@ -163,6 +201,10 @@ export function getTableDDLSql(opt: DBOption, tableName: string): string {
     case 'mssql':
       // TODO not yet implemented
       return `SELECT '' AS "Create Table" FROM ${tableName}`
+    case 'oracle':
+      return `
+      SELECT dbms_metadata.get_ddl('TABLE', '${tableName.toUpperCase()}', '${opt.user.toUpperCase()}') AS "Create Table" FROM dual;
+      `
     default:
       console.error('Unsupported database type!')
       process.exit(1)

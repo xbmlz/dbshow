@@ -1,5 +1,7 @@
 import type { Dialect } from 'sequelize'
 
+export type DBType = Dialect
+
 export interface DB {
   name: string
   value: Dialect
@@ -14,14 +16,13 @@ export interface DBOption {
   user: string
   pwd: string
   database: string
+  connectString?: string
 }
 
 export interface LocalConfig extends DBOption {
   key: string
   createdTime: number
 }
-
-export type DBType = Dialect
 
 export interface ColumnInfo {
   ordinalPosition: number

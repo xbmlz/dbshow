@@ -40,6 +40,7 @@ async function main() {
       user: c!.user,
       pwd: c!.pwd,
       database: c!.database,
+      connectString: c!.connectString,
     }
   }
   else {
@@ -69,6 +70,19 @@ async function main() {
       default: dbList.find(db => db.value === dbType)?.defaultPort || '',
     })
 
+    let connectString
+    if (dbType === 'oracle') {
+      const connectName = await input({
+        message: 'Enter the SID or Service Name',
+        validate: (input) => {
+          if (!input)
+            return 'Please enter the SID or Service Name!'
+          return true
+        },
+      })
+      connectString = `//${host}:${port}/${connectName}`
+    }
+
     const user = await input({
       message: 'Enter the user name',
       default: dbList.find(db => db.value === dbType)?.defaultUser || '',
@@ -93,6 +107,7 @@ async function main() {
       user,
       pwd,
       database,
+      connectString,
     }
   }
 

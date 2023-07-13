@@ -15,7 +15,11 @@ export async function getDBInfo(opt: DBOption): Promise<DBInfo> {
     password: opt.pwd,
     database: opt.database,
     logging: false,
+    dialectOptions: {
+      connectString: opt.connectString || undefined,
+    },
   })
+
   try {
     await sequelize.authenticate()
   }
@@ -55,6 +59,7 @@ export async function getDBInfo(opt: DBOption): Promise<DBInfo> {
     table.columns = columns
   }
   db.tables = tables
+  sequelize.close()
   return db
 }
 
