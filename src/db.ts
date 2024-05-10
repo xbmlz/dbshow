@@ -1,10 +1,9 @@
 import { Sequelize } from 'sequelize'
 import { Parser } from 'sql-ddl-to-json-schema'
-import { compile } from 'json-schema-to-typescript'
 import type { JSONSchema4 } from 'json-schema'
 import type { ColumnInfo, DBInfo, DBOption, TableInfo } from './types'
 import { getColumnSql, getDBSql, getTableDDLSql, getTableSql } from './sql'
-import { toInterfaceName } from './utils'
+import { quicktypeJSONSchema } from './utils'
 
 export async function getDBInfo(opt: DBOption): Promise<DBInfo> {
   const sequelize = new Sequelize({
@@ -48,7 +47,24 @@ export async function getDBInfo(opt: DBOption): Promise<DBInfo> {
     const js = getTableJsonSchema(table.tableDDL)
     if (js.length > 0) {
       table.jsonSchema = JSON.stringify(js[0], null, 2)
-      table.tsInterface = await getTableTsInterface(js[0], table.tableName)
+      const { lines: tsLines } = await quicktypeJSONSchema('TypeScript', table.tableName, table.jsonSchema, {
+        'just-types': true,
+      })
+      table.tsModel = tsLines.join('\n')
+      const { lines: goLines } = await quicktypeJSONSchema('Go', table.tableName, table.jsonSchema, {
+        'just-types': true,
+      })
+      table.goModel = goLines.join('\n')
+      const { lines: javaLines } = await quicktypeJSONSchema('Java', table.tableName, table.jsonSchema, {
+        'just-types': true,
+        'lombok': true,
+      })
+      table.javaModel = javaLines.join('\n')
+      const { lines: rustLines } = await quicktypeJSONSchema('Rust', table.tableName, table.jsonSchema, {
+        'just-types': true,
+        'leading-comments': false,
+      })
+      table.rustModel = rustLines.join('\n')
     }
     // find column info
     const [columns] = await sequelize.query(getColumnSql(opt, table.tableName)) as ColumnInfo[]
@@ -77,17 +93,5 @@ function getTableJsonSchema(ddl: string): JSONSchema4[] {
   }
   catch (error) {
     return []
-  }
-}
-
-async function getTableTsInterface(js: JSONSchema4, tableName: string): Promise<string> {
-  try {
-    const ts = await compile(js, toInterfaceName(tableName), {
-      additionalProperties: false,
-    })
-    return ts
-  }
-  catch (error) {
-    return ''
   }
 }

@@ -39,7 +39,10 @@ export interface TableInfo {
   tableComment: string
   tableDDL: string
   jsonSchema: string
-  tsInterface: string
+  tsModel: string
+  goModel: string
+  javaModel: string
+  rustModel: string
   createTime: string
   updateTime: string
   columns: ColumnInfo[]

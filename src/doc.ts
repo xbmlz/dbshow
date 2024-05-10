@@ -76,10 +76,17 @@ function buildTableInfo(table: TableInfo): string {
   for (const column of table.columns)
     tableInfo += `| ${column.columnName} | ${column.columnType} | ${column.columnKey} | ${column.columnDefault} | ${column.isNullable} | ${convertLineBreaks(column.columnComment)} |\n`
   if (table.tableDDL) {
-    tableInfo += '\n## DDL\n\n'
+    tableInfo += '\n## Schema\n\n'
+    tableInfo += '<!-- tabs:start -->\n\n'
+    tableInfo += '#### **DDL**\n\n'
     tableInfo += '```sql\n'
     tableInfo += `${table.tableDDL}\n`
     tableInfo += '```\n'
+    tableInfo += '#### **JSON**\n\n'
+    tableInfo += '```sql\n'
+    tableInfo += `${table.jsonSchema}\n`
+    tableInfo += '```\n'
+    tableInfo += '<!-- tabs:end -->\n\n'
   }
   // if (table.jsonSchema) {
   //   tableInfo += '\n## JSON Schema\n\n'
@@ -87,11 +94,26 @@ function buildTableInfo(table: TableInfo): string {
   //   tableInfo += `${table.jsonSchema}\n`
   //   tableInfo += '```\n'
   // }
-  if (table.tsInterface) {
-    tableInfo += '\n## TypeScript Interface\n\n'
+  if (table.jsonSchema) {
+    tableInfo += '\n## Model\n'
+    tableInfo += '<!-- tabs:start -->\n\n'
+    tableInfo += '#### **TypeScript**\n'
     tableInfo += '```typescript\n'
-    tableInfo += `${table.tsInterface}\n`
+    tableInfo += `${table.tsModel}`
     tableInfo += '```\n'
+    tableInfo += '#### **Go**\n\n'
+    tableInfo += '```go\n'
+    tableInfo += `${table.goModel}`
+    tableInfo += '```\n'
+    tableInfo += '#### **Java**\n\n'
+    tableInfo += '```java\n'
+    tableInfo += `${table.javaModel}`
+    tableInfo += '```\n'
+    tableInfo += '#### **Rust**\n\n'
+    tableInfo += '```rust\n'
+    tableInfo += `${table.rustModel}`
+    tableInfo += '```\n'
+    tableInfo += '<!-- tabs:end -->\n'
   }
   return tableInfo
 }
@@ -104,19 +126,25 @@ export function buildDocsifyIndexRaw(opt: DBOption) {
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta charset="UTF-8">
-  <link href="https://cdn.bootcdn.net/ajax/libs/docsify/4.13.0/themes/vue.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/themes/vue.css" />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,${btoa(SITE_FAVICON)}">
   <title>${opt.database} - DBShow</title>
+  <style>
+    :root {
+      --docsifytabs-border-color: #ededed;
+      --docsifytabs-tab-highlight-color: #42b983;
+    }
+  </style>
 </head>
 <body>
-<div id="app">加载中</div>
+<div id="app">Please wait...</div>
 <script>
   window.$docsify = {
     loadSidebar: true,
     auto2top: true,
     search: {
-      placeholder: '搜索',
-      noData: '找不到结果',
+      placeholder: 'Search',
+      noData: 'No Results!',
     },
     name: '${opt.database} - DBShow',
     plugins: [
@@ -129,15 +157,26 @@ export function buildDocsifyIndexRaw(opt: DBOption) {
           )
         })
       }
-    ]
+    ],
+    tabs: {
+      persist: true,
+      sync: true,
+      theme: 'classic',
+      tabComments: true,
+      tabHeadings: true
+    }
   }
 </script>
-<script src="https://cdn.bootcdn.net/ajax/libs/docsify/4.13.0/docsify.min.js"></script>
-<script src="https://cdn.bootcdn.net/ajax/libs/docsify/4.13.0/plugins/search.min.js"></script>
-<script src="https://cdn.bootcdn.net/ajax/libs/docsify-copy-code/2.1.1/docsify-copy-code.min.js"></script>
-<script src="https://cdn.bootcdn.net/ajax/libs/prism/1.9.0/components/prism-sql.min.js"></script>
-<script src="https://cdn.bootcdn.net/ajax/libs/prism/1.9.0/components/prism-json.min.js"></script>
-<script src="https://cdn.bootcdn.net/ajax/libs/prism/1.9.0/components/prism-typescript.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+<script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/docsify-copy-code@3"></script>
+<script src="//cdn.jsdelivr.net/npm/docsify-tabs@1"></script>
+<script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-sql.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-json.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-typescript.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-go.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-java.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-rust.min.js"></script>
 </body>
 </html>
 `
