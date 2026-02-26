@@ -2,7 +2,7 @@ import fs from 'node:fs'
 import os from 'node:os'
 import gradient from 'gradient-string'
 import { FetchingJSONSchemaStore, InputData, JSONSchemaInput, quicktype } from 'quicktype-core'
-import type { RendererOptions } from 'quicktype-core'
+import type { RendererOptions, TargetLanguage } from 'quicktype-core'
 
 export async function createDir(dir: string) {
   if (fs.existsSync(dir))
@@ -55,7 +55,7 @@ export async function quicktypeJSONSchema(targetLanguage: string, typeName: stri
 
   return await quicktype({
     inputData,
-    lang: targetLanguage,
+    lang: targetLanguage as unknown as TargetLanguage,
     rendererOptions,
   })
 }

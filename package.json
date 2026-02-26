@@ -42,27 +42,27 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "@inquirer/prompts": "^2.3.0",
+    "@inquirer/prompts": "^2.3.1",
     "gradient-string": "^2.0.2",
-    "mysql2": "^3.5.0",
+    "mysql2": "^3.18.1",
     "ora": "^6.3.1",
-    "oracledb": "^6.0.2",
-    "pg": "^8.11.1",
+    "oracledb": "^6.10.0",
+    "pg": "^8.19.0",
     "pg-hstore": "^2.3.4",
-    "quicktype-core": "^23.0.158",
-    "sequelize": "^6.32.1",
-    "sql-ddl-to-json-schema": "^4.1.0",
-    "tedious": "^16.2.0"
+    "quicktype-core": "^23.2.6",
+    "sequelize": "^6.37.7",
+    "sql-ddl-to-json-schema": "^4.1.1",
+    "tedious": "^16.7.1"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^0.39.7",
-    "@types/gradient-string": "^1.1.2",
-    "@types/json-schema": "^7.0.12",
-    "@types/node": "^20.4.0",
-    "bumpp": "^9.1.1",
+    "@antfu/eslint-config": "^0.39.8",
+    "@types/gradient-string": "^1.1.6",
+    "@types/json-schema": "^7.0.15",
+    "@types/node": "^20.19.34",
+    "bumpp": "^9.11.1",
     "eslint": "^8.44.0",
     "esno": "^0.16.3",
-    "typescript": "^5.1.6",
+    "typescript": "^5.9.3",
     "unbuild": "^1.2.1"
   },
   "eslintConfig": {

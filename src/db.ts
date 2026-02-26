@@ -47,20 +47,20 @@ export async function getDBInfo(opt: DBOption): Promise<DBInfo> {
     const js = getTableJsonSchema(table.tableDDL)
     if (js.length > 0) {
       table.jsonSchema = JSON.stringify(js[0], null, 2)
-      const { lines: tsLines } = await quicktypeJSONSchema('TypeScript', table.tableName, table.jsonSchema, {
+      const { lines: tsLines } = await quicktypeJSONSchema('ts', table.tableName, table.jsonSchema, {
         'just-types': true,
       })
       table.tsModel = tsLines.join('\n')
-      const { lines: goLines } = await quicktypeJSONSchema('Go', table.tableName, table.jsonSchema, {
+      const { lines: goLines } = await quicktypeJSONSchema('go', table.tableName, table.jsonSchema, {
         'just-types': true,
       })
       table.goModel = goLines.join('\n')
-      const { lines: javaLines } = await quicktypeJSONSchema('Java', table.tableName, table.jsonSchema, {
+      const { lines: javaLines } = await quicktypeJSONSchema('java', table.tableName, table.jsonSchema, {
         'just-types': true,
         'lombok': true,
       })
       table.javaModel = javaLines.join('\n')
-      const { lines: rustLines } = await quicktypeJSONSchema('Rust', table.tableName, table.jsonSchema, {
+      const { lines: rustLines } = await quicktypeJSONSchema('rust', table.tableName, table.jsonSchema, {
         'just-types': true,
         'leading-comments': false,
       })
